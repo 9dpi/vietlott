@@ -1,14 +1,12 @@
 @echo off
 echo ============================================
-echo  Vietlott AI - Giao dien quan tri Admin Dashboard
+echo  Vietlott AI - Fix duplicate buttons
 echo ============================================
 cd /d "d:\Automator_Prj\Vlot\vietlott"
 git add -A
-git commit -m "feat: Kich hoat hien thi Admin Dashboard de xem nhat ky
+git commit -m "fix: Loai bo nut 'He Thong' bi trung lap
 
-- Them nut 'He Thong' (System Logs) tren thanh cong cu cua App
-- Cho phep xem xet toan bo Automation Logs (Fetch, Analyze, Predict, Email) ma he thong tu dong chay ngam
-- Theo doi tinh trang bat/tat Automation và do chinh xac hien tai"
+- Xoa nut 'He Thong' vi da co san nut 'Quan Tri' dam nhiem chuc nang mo AdminDashboard tu truoc"
 git push origin main
 echo.
 echo Hoan thanh! Site se cap nhat tai:
