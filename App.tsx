@@ -59,6 +59,13 @@ const App: React.FC = () => {
   const [autoFetchStatus, setAutoFetchStatus] = useState<AutoFetchStatus>(autoFetchService.getStatus());
   const [autoFetchEnabled, setAutoFetchEnabled] = useState(false);
 
+  // Passcode lock state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem('app_authenticated') === 'true';
+  });
+  const [passcode, setPasscode] = useState('');
+  const [passcodeError, setPasscodeError] = useState(false);
+
   // Initialize automation services on startup
   useEffect(() => {
     startupServices();
@@ -113,6 +120,52 @@ const App: React.FC = () => {
       error: 'Không thể làm mới dữ liệu',
     });
   };
+
+  const handlePasscodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passcode === '989999') {
+      sessionStorage.setItem('app_authenticated', 'true');
+      setIsAuthenticated(true);
+      setPasscodeError(false);
+    } else {
+      setPasscodeError(true);
+      setPasscode('');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 w-full max-w-sm shadow-2xl text-center">
+          <div className="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-500/30">
+            <span className="text-3xl">🔒</span>
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">Vietlott AI</h1>
+          <p className="text-slate-400 text-sm mb-6">Vui lòng nhập mã bảo vệ để truy cập hệ thống</p>
+          
+          <form onSubmit={handlePasscodeSubmit}>
+            <input
+              type="password"
+              value={passcode}
+              onChange={(e) => setPasscode(e.target.value)}
+              placeholder="Nhập mã bảo vệ..."
+              className={`w-full bg-slate-900 border ${passcodeError ? 'border-red-500' : 'border-slate-600'} rounded-xl p-3 text-center text-white mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-xl tracking-widest`}
+              autoFocus
+            />
+            {passcodeError && (
+              <p className="text-red-400 text-xs mb-4 animate-pulse">Mã bảo vệ không chính xác!</p>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all"
+            >
+              Mở Khóa
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-slate-200 font-sans selection:bg-indigo-500/30">

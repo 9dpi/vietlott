@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { LotteryType, DrawResult, LotteryConfig, AIStrategy } from '../types';
 import { LOTTERY_CONFIG, AI_STRATEGIES } from '../constants';
+import { predictionAnalysisService } from './predictionAnalysisService';
 
 function getAiClient() {
   const apiKey = sessionStorage.getItem('geminiApiKey');
@@ -42,6 +43,12 @@ function preparePrompt(
   
   const strategyDescription = AI_STRATEGIES[strategy].description;
 
+  // Lay insights tu he thong tu hoc
+  const insights = predictionAnalysisService.generateInsights(lotteryType, 300); // lookback 300 days for broad patterns
+  const insightText = insights.length > 0 
+    ? insights.map(i => i.description).join('\n    - ') 
+    : 'Chưa đủ dữ liệu tự học. Hãy dựa vào thống kê cơ bản.';
+
   const lockedNumbersPrompt = lockedNumbers && lockedNumbers.length > 0
     ? `The user has locked in the numbers: ${lockedNumbers.join(', ')}. Your primary task is to find the best ${config.mainNumbers - lockedNumbers.length} companion numbers to complete their ticket. The final set must include the locked numbers.`
     : '';
@@ -59,9 +66,12 @@ function preparePrompt(
     - Hot Numbers (most frequent overall): ${hotNumbers}
     - Cold Numbers (least frequent overall): ${coldNumbers}
     - Momentum Numbers (appearing more often recently): ${momentumNumbers}
+
+    AI SELF-LEARNING INSIGHTS (from past prediction simulations):
+    - ${insightText}
     
     YOUR TASK:
-    1.  ${lockedNumbersPrompt || 'Based on the deep analysis, generate a set of predicted numbers.'}
+    1.  ${lockedNumbersPrompt || 'Based on the deep analysis and self-learning insights, generate a set of predicted numbers.'}
     2.  Adhere to the selected user strategy: "${strategy} - ${strategyDescription}".
     3.  Provide a single, concise sentence explaining the reasoning for your number selection based on the chosen strategy and the data. For example: "The numbers balance hot and cold picks while maintaining a common odd/even ratio."
 

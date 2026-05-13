@@ -1,15 +1,14 @@
 @echo off
 echo ============================================
-echo  Vietlott AI - Tinh nang Tu hoc tu lich su
+echo  Vietlott AI - Cap nhat Bao Mat Passcode
 echo ============================================
 cd /d "d:\Automator_Prj\Vlot\vietlott"
 git add -A
-git commit -m "feat: Nang cap tinh nang Tu Hoc bang cach su dung du lieu lich su
+git commit -m "feat: Them man hinh khoa Passcode bao mat
 
-- Them nut 'Hoc tu Du lieu' (Train from History) vao SelfLearningPanel
-- Su dung BacktestService de mo phong du doan cho 200 ky quay gan nhat
-- Tu dong inject cac du doan mo phong vao PredictionAnalysisService
-- Cho phep he thong AI tu dong tim ra insight tu toan bo lich su 1,344 ky ngay ca khi chua co lich su du doan thu cong cua user"
+- Yeu cau nhap Passcode (989999) de truy cap vao app
+- Su dung sessionStorage de luu trang thai xac thuc: tu dong xoa ngay khi dong trinh duyet
+- Giao dien khoa dep mat voi hieu ung animation"
 git push origin main
 echo.
 echo Hoan thanh! Site se cap nhat tai:

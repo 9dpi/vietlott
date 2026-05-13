@@ -3,10 +3,16 @@ import { LOTTERY_TYPES } from '../constants.ts';
 
 import power655Url from '../power655.jsonl.txt?url';
 
-// GitHub repository data URLs (or local fallbacks)
-const DATA_URLS = {
-  [LOTTERY_TYPES.POWER]: power655Url, // Using local file for better reliability and complete history
+// Live GitHub repository data URLs
+const LIVE_DATA_URLS = {
+  [LOTTERY_TYPES.POWER]: 'https://raw.githubusercontent.com/vietvudanh/vietlott-data/master/data/power655.jsonl',
   [LOTTERY_TYPES.MEGA]: 'https://raw.githubusercontent.com/vietvudanh/vietlott-data/master/data/power645.jsonl'
+};
+
+// Local deep history fallback URLs
+const LOCAL_DATA_URLS = {
+  [LOTTERY_TYPES.POWER]: power655Url,
+  [LOTTERY_TYPES.MEGA]: null
 };
 
 interface VietlottDataEntry {
@@ -28,37 +34,62 @@ export async function fetchRealLotteryData(
   limit: number = 50
 ): Promise<DrawResult[]> {
   try {
-    const url = DATA_URLS[lotteryType];
-    if (!url) {
+    const liveUrl = LIVE_DATA_URLS[lotteryType];
+    const localUrl = LOCAL_DATA_URLS[lotteryType];
+    
+    if (!liveUrl) {
       throw new Error(`Unsupported lottery type: ${lotteryType}`);
     }
 
-    console.log(`Fetching real data for ${lotteryType} from: ${url}`);
+    const rawData: VietlottDataEntry[] = [];
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+    // 1. Fetch live data (always has the most recent draws)
+    try {
+      console.log(`Fetching live data for ${lotteryType} from: ${liveUrl}`);
+      const response = await fetch(liveUrl);
+      if (response.ok) {
+        const text = await response.text();
+        const lines = text.trim().split('\n');
+        for (const line of lines) {
+          if (line.trim()) {
+            try { rawData.push(JSON.parse(line) as VietlottDataEntry); } catch { /* ignore */ }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(`Could not fetch live data for ${lotteryType}:`, e);
     }
 
-    const text = await response.text();
-    const lines = text.trim().split('\n');
-
-    // Parse JSONL format (each line is a JSON object)
-    const rawData: VietlottDataEntry[] = [];
-    for (const line of lines) {
-      if (line.trim()) {
-        try {
-          const entry = JSON.parse(line) as VietlottDataEntry;
-          rawData.push(entry);
-        } catch (parseError) {
-          console.warn('Failed to parse line:', line, parseError);
+    // 2. Fetch local deep history data (for Power 6/55)
+    if (localUrl) {
+      try {
+        console.log(`Fetching local deep history for ${lotteryType}`);
+        const localResponse = await fetch(localUrl);
+        if (localResponse.ok) {
+          const text = await localResponse.text();
+          const lines = text.trim().split('\n');
+          for (const line of lines) {
+            if (line.trim()) {
+              try { rawData.push(JSON.parse(line) as VietlottDataEntry); } catch { /* ignore */ }
+            }
+          }
         }
+      } catch (e) {
+        console.warn(`Could not fetch local data for ${lotteryType}:`, e);
       }
     }
 
-    // Convert to our DrawResult format and sort by date (newest first)
-    const drawResults: DrawResult[] = rawData
-      .map(entry => convertToDrawResult(entry, lotteryType))
+    // 3. Deduplicate by drawId, convert to DrawResult, and sort
+    const uniqueMap = new Map<string, DrawResult>();
+    
+    rawData.forEach(entry => {
+      const result = convertToDrawResult(entry, lotteryType);
+      if (!uniqueMap.has(result.drawId)) {
+        uniqueMap.set(result.drawId, result);
+      }
+    });
+
+    const drawResults: DrawResult[] = Array.from(uniqueMap.values())
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // Only limit if limit is provided and less than total length
@@ -109,7 +140,7 @@ export async function fetchLatestDraw(lotteryType: LotteryType): Promise<DrawRes
  * Checks if real data is available for the given lottery type
  */
 export function isRealDataAvailable(lotteryType: LotteryType): boolean {
-  return lotteryType in DATA_URLS;
+  return lotteryType in LIVE_DATA_URLS;
 }
 
 /**
