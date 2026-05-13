@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PredictionRecord, DrawResult, LotteryType } from '../types';
 import { predictionAnalysisService, AccuracyMetrics } from '../services/predictionAnalysisService';
+import { backtestService } from '../services/backtestService';
+import { toast } from 'react-hot-toast';
 
 interface SelfLearningPanelProps {
   isOpen: boolean;
@@ -72,6 +74,58 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
     setIsAnalyzing(false);
   };
 
+  const trainFromHistory = async () => {
+    if (drawHistory.length < 50) {
+      toast.error('Cần ít nhất 50 kỳ quay để tự học từ lịch sử.');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    toast.loading('Đang tự học từ dữ liệu lịch sử...', { id: 'training' });
+
+    try {
+      // Simulate predictions using BacktestService on the last 200 available draws
+      const result = await backtestService.runBacktest(
+        {
+          lotteryType,
+          strategy: 'BALANCED',
+          lookbackPeriod: 20,
+          testDraws: Math.min(200, drawHistory.length - 20)
+        },
+        drawHistory
+      );
+
+      // Inject simulated results into PredictionAnalysisService
+      let count = 0;
+      for (const r of result.results) {
+        const mockPrediction: PredictionRecord = {
+          id: `mock-${r.drawId}`,
+          date: r.drawDate,
+          lotteryType,
+          predictedNumbers: r.predictedNumbers,
+          specialNumber: r.specialNumberPredicted,
+          strategy: 'BALANCED',
+          reasoning: 'Retroactive simulation'
+        };
+
+        const actualDraw = drawHistory.find(d => d.drawId === r.drawId);
+        if (actualDraw) {
+          try {
+            predictionAnalysisService.analyzePrediction(mockPrediction, actualDraw);
+            count++;
+          } catch { /* ignore duplicates */ }
+        }
+      }
+
+      toast.success(`Đã học xong từ ${count} kỳ quay lịch sử!`, { id: 'training' });
+      runAnalysis(); // reload metrics
+    } catch (error) {
+      toast.error('Lỗi khi học từ lịch sử.', { id: 'training' });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       runAnalysis();
@@ -101,21 +155,18 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={runAnalysis}
-              disabled={isAnalyzing}
-              className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
+              onClick={trainFromHistory}
+              disabled={isAnalyzing || drawHistory.length < 50}
+              className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Chạy mô phỏng trên lịch sử để AI học hỏi các mẫu hình"
             >
-              {isAnalyzing ? (
-                <><div className="w-3 h-3 border-t border-white rounded-full animate-spin" /><span>Analyzing...</span></>
-              ) : (
-                <><span>↻</span><span>Refresh</span></>
-              )}
+              <span>📚</span> Học từ Dữ liệu
             </button>
             <button
               onClick={onClose}
               className="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-700"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
         </div>
