@@ -1,14 +1,14 @@
 @echo off
 echo ============================================
-echo  Vietlott AI - Cap nhat Bao Mat Passcode
+echo  Vietlott AI - Giao dien quan tri Admin Dashboard
 echo ============================================
 cd /d "d:\Automator_Prj\Vlot\vietlott"
 git add -A
-git commit -m "feat: Them man hinh khoa Passcode bao mat
+git commit -m "feat: Kich hoat hien thi Admin Dashboard de xem nhat ky
 
-- Yeu cau nhap Passcode (989999) de truy cap vao app
-- Su dung sessionStorage de luu trang thai xac thuc: tu dong xoa ngay khi dong trinh duyet
-- Giao dien khoa dep mat voi hieu ung animation"
+- Them nut 'He Thong' (System Logs) tren thanh cong cu cua App
+- Cho phep xem xet toan bo Automation Logs (Fetch, Analyze, Predict, Email) ma he thong tu dong chay ngam
+- Theo doi tinh trang bat/tat Automation và do chinh xac hien tai"
 git push origin main
 echo.
 echo Hoan thanh! Site se cap nhat tai:
