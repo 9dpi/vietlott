@@ -12,35 +12,29 @@
 
 ## ✨ Tính năng
 
-### 1. 🔮 Dự đoán AI (Gemini)
-- Sử dụng Google Gemini 2.5 Flash để phân tích lịch sử và dự đoán
-- 4 chiến lược: **Balanced Mix**, **Hot Focus**, **Cold Focus**, **AI Co-Pilot**
-- Phân tích tần suất, momentum, hot/cold numbers
+### 1. 🔮 Trí tuệ Nhân tạo (Gemini AI)
+- Sử dụng Google Gemini 2.5 Flash để phân tích lịch sử và đưa ra dự đoán.
+- Hệ thống tự động đẩy các quy luật (Insights) mà bộ máy Tự Học khám phá được vào trong câu lệnh (Prompt) của AI, giúp AI tiến hóa sau mỗi kỳ quay.
+- 4 chiến lược chọn số: **Balanced Mix**, **Hot Focus**, **Cold Focus**, **AI Co-Pilot**.
 
-### 2. 📡 Tự động lấy kết quả (Auto-Fetch)
-- Tự động tải kết quả mới theo lịch xổ số:
-  - **Power 6/55**: Thứ 3, 5, 7 (18:00 ICT)
-  - **Mega 6/45**: Thứ 4, 6, CN (18:00 ICT)
-- Kiểm tra mỗi 5 phút, tự động cập nhật UI
-- Dữ liệu thực từ [vietvudanh/vietlott-data](https://github.com/vietvudanh/vietlott-data)
+### 2. 📡 Nguồn Dữ liệu Kép (Local + Live)
+- **Local:** Tích hợp cứng 1,344 kỳ quay từ 2017 đến nay, đảm bảo dữ liệu luôn đầy đủ ngay khi mở app.
+- **Live:** Tự động Auto-Fetch kết quả mới nhất từ Github sau mỗi kỳ quay (Power 6/55: Thứ 3, 5, 7 lúc 18:00 ICT).
+- Tự động gộp dữ liệu và xóa trùng lặp, đảm bảo không bao giờ bị gián đoạn.
 
-### 3. 🧠 Tự học (Self-Learning)
-- Tự động so sánh mỗi dự đoán với kết quả thực
-- Tính toán độ chính xác theo thời gian
-- Phân tích pattern: consecutive numbers, frequency, range, sum
-- Đề xuất chiến lược cải thiện dựa trên lịch sử
+### 3. 🧠 Tự học (Self-Learning) & Backtest
+- Mượn cỗ máy **Backtest** để giả lập đánh thử 200 ngày trong quá khứ mà không nhìn trước kết quả.
+- Rút ra bài học từ các dự đoán sai/đúng (ví dụ: số nào hay về cùng nhau, khoảng số nào an toàn).
+- Tạo thành vòng lặp tự động: *Dữ liệu mới -> Backtest -> Tự Học -> AI thông minh hơn*.
 
-### 4. 📊 Backtest Engine
-- Kiểm tra hiệu quả chiến lược trên dữ liệu lịch sử
-- 4 chiến lược: HOT, COLD, BALANCED, RANDOM
-- Xem biểu đồ kết quả, phân phối prize, win rate
-- Tùy chỉnh lookback period và số lần test
+### 4. 📈 Bảng Quản Trị & Thống Kê (Admin Dashboard)
+- Hệ thống chạy ngầm toàn bộ quy trình: Quét dữ liệu -> Phân tích -> Gửi Email -> Lưu Log.
+- Bảng Admin Dashboard lưu lại toàn bộ Nhật ký hoạt động (Logs) của hệ thống.
+- **Phân Tích Lịch Sử:** Hiển thị khối lượng dữ liệu, Số nóng nhất, Tỷ lệ Lẻ/Chẵn, và Tổng trung bình trên nền tảng 1,344+ kỳ quay.
 
-### 5. 📈 Dashboard Phân tích
-- Heatmap tần suất theo số
-- Biểu đồ lịch sử kết quả
-- Lịch sử dự đoán với kết quả đối chiếu
-- Simulation mode để test dự đoán ngược
+### 5. 🔒 Bảo mật tuyệt đối (Passcode Lock)
+- Giao diện khóa App bằng mã bảo vệ (Passcode: `989999`).
+- Cơ chế lưu trữ `sessionStorage`: API Key và trạng thái đăng nhập sẽ bốc hơi hoàn toàn và vĩnh viễn ngay khi bạn đóng trình duyệt.
 
 ---
 
@@ -66,11 +60,12 @@ Mở trình duyệt tại `http://localhost:5173`
 
 ---
 
-## 🔑 Cấu hình API Key
+## 🔑 Bảo mật & Cấu hình
 
-1. Lấy API key tại [Google AI Studio](https://aistudio.google.com/)
-2. Click nút **"API Key"** trong app để nhập
-3. Key được lưu trong sessionStorage (không lưu vĩnh viễn)
+1. App yêu cầu mã bảo vệ khi mở lên: **`989999`**.
+2. Lấy API key tại [Google AI Studio](https://aistudio.google.com/)
+3. Click nút **"API Key"** trong app để nhập.
+4. Key và Passcode được lưu trong **sessionStorage** — sẽ bị hủy hoàn toàn khi bạn đóng trình duyệt web. Khuyến khích mức độ an toàn cao nhất!
 
 ---
 
