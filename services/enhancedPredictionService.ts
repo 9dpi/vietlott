@@ -64,7 +64,7 @@ export class EnhancedPredictionService {
     
     // Apply statistical enhancements
     const enhancedNumbers = this.applyStatisticalEnhancements(
-      basePrediction.numbers,
+      basePrediction.predictedNumbers,
       context,
       opts
     );
@@ -80,7 +80,7 @@ export class EnhancedPredictionService {
 
     return {
       ...basePrediction,
-      numbers: enhancedNumbers,
+      predictedNumbers: enhancedNumbers,
       confidence,
       methodology,
       insights,
@@ -136,12 +136,12 @@ export class EnhancedPredictionService {
 
       return {
         id: `enhanced_${Date.now()}`,
-        numbers: result.predictedNumbers,
+        predictedNumbers: result.predictedNumbers,
         lotteryType,
         date: new Date().toISOString().split('T')[0],
-        confidence: 0.7, // Base confidence, will be enhanced later
         reasoning: result.reasoning,
-        specialNumber: result.specialNumber
+        specialNumber: result.specialNumber,
+        strategy: 'BALANCED',
       };
     } catch (error) {
       console.warn('Failed to generate AI prediction, using statistical fallback:', error);
@@ -334,11 +334,11 @@ export class EnhancedPredictionService {
     
     return {
       id: `fallback_${Date.now()}`,
-      numbers,
+      predictedNumbers: numbers,
       lotteryType,
       date: new Date().toISOString().split('T')[0],
-      confidence: 0.4,
       reasoning: "Statistical analysis based on recent draw frequency",
+      strategy: 'BALANCED',
       specialNumber: lotteryType === 'power' ? this.selectSpecialNumber(context.recentDraws) : undefined
     };
   }

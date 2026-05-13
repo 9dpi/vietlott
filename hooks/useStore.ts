@@ -24,6 +24,12 @@ interface AppState {
   
   isAdminDashboardOpen: boolean;
   setIsAdminDashboardOpen: (isOpen: boolean) => void;
+
+  isBacktestOpen: boolean;
+  setIsBacktestOpen: (isOpen: boolean) => void;
+
+  isSelfLearningOpen: boolean;
+  setIsSelfLearningOpen: (isOpen: boolean) => void;
   
   inspectedNumber: number | null;
   setInspectedNumber: (number: number | null) => void;
@@ -71,6 +77,12 @@ export const useStore = create<AppState>((set, get) => {
 
     isAdminDashboardOpen: false,
     setIsAdminDashboardOpen: (isOpen) => set({ isAdminDashboardOpen: isOpen }),
+
+    isBacktestOpen: false,
+    setIsBacktestOpen: (isOpen) => set({ isBacktestOpen: isOpen }),
+
+    isSelfLearningOpen: false,
+    setIsSelfLearningOpen: (isOpen) => set({ isSelfLearningOpen: isOpen }),
 
     inspectedNumber: null,
     setInspectedNumber: (num) => set({ inspectedNumber: num }),

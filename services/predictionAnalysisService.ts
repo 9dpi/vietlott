@@ -41,11 +41,11 @@ export interface AccuracyMetrics {
   worstAccuracy: number;
   improvementTrend: number; // Positive = improving, negative = declining
   recentPerformance: number; // Last 10 predictions average
-  byLotteryType: Record<LotteryType, {
+  byLotteryType: Partial<Record<LotteryType, {
     count: number;
     averageAccuracy: number;
     bestAccuracy: number;
-  }>;
+  }>>;
 }
 
 export class PredictionAnalysisService {
@@ -62,8 +62,8 @@ export class PredictionAnalysisService {
       throw new Error('Lottery type mismatch between prediction and result');
     }
 
-    const predictedNumbers = prediction.numbers.sort((a, b) => a - b);
-    const actualNumbers = actualResult.numbers.sort((a, b) => a - b);
+    const predictedNumbers = prediction.predictedNumbers.slice().sort((a, b) => a - b);
+    const actualNumbers = actualResult.numbers.slice().sort((a, b) => a - b);
 
     // Calculate matches
     const exactMatches = predictedNumbers.filter(num => actualNumbers.includes(num)).length;

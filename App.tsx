@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Header } from './components/Header.tsx';
 import { LotterySelector } from './components/LotterySelector.tsx';
 import { Dashboard } from './components/Dashboard.tsx';
@@ -11,12 +11,16 @@ import { ApiKeyModal } from './components/ApiKeyModal.tsx';
 import { SubscriptionModal } from './components/SubscriptionModal.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
+import { BacktestPanel } from './components/BacktestPanel.tsx';
+import { SelfLearningPanel } from './components/SelfLearningPanel.tsx';
 import { Toaster, toast } from 'react-hot-toast';
 
 import { startupServices } from './services/startup.ts';
+import { autoFetchService, AutoFetchStatus } from './services/autoFetchService.ts';
 import { useStore } from './hooks/useStore.ts';
 import { useLotteryData } from './hooks/useLotteryData.ts';
 import { useSimulation } from './hooks/useSimulation.ts';
+import { DrawResult } from './types.ts';
 
 // Import service loader
 import './services/serviceLoader.ts';
@@ -29,6 +33,8 @@ const App: React.FC = () => {
     isApiKeyModalOpen, setIsApiKeyModalOpen,
     isSubscriptionModalOpen, setIsSubscriptionModalOpen,
     isAdminDashboardOpen, setIsAdminDashboardOpen,
+    isBacktestOpen, setIsBacktestOpen,
+    isSelfLearningOpen, setIsSelfLearningOpen,
     inspectedNumber, setInspectedNumber
   } = useStore();
 
@@ -47,10 +53,45 @@ const App: React.FC = () => {
     visibleHistory, handleRevealDraw
   } = useSimulation(history, predictionHistory);
 
+  // Auto-fetch state
+  const [autoFetchStatus, setAutoFetchStatus] = useState<AutoFetchStatus>(autoFetchService.getStatus());
+  const [autoFetchEnabled, setAutoFetchEnabled] = useState(false);
+
   // Initialize automation services on startup
   useEffect(() => {
     startupServices();
   }, []);
+
+  // Subscribe to auto-fetch status changes
+  useEffect(() => {
+    const unsubscribe = autoFetchService.onStatusChange(setAutoFetchStatus);
+    return unsubscribe;
+  }, []);
+
+  // Auto-fetch listener: when new data arrives, update history
+  const handleAutoFetchData = useCallback((data: DrawResult[], lotteryType: typeof selectedLottery) => {
+    if (lotteryType === selectedLottery) {
+      updateDrawHistory(data);
+      toast.success(`✅ Auto-fetched ${data.length} latest results for ${lotteryType}`, {
+        duration: 4000,
+        icon: '🔄',
+      });
+    }
+  }, [selectedLottery, updateDrawHistory]);
+
+  // Toggle auto-fetch
+  const handleToggleAutoFetch = useCallback(() => {
+    const nowEnabled = autoFetchService.toggle([handleAutoFetchData]);
+    setAutoFetchEnabled(nowEnabled);
+    if (nowEnabled) {
+      toast.success('Auto-fetch enabled. Results will update automatically after each draw.', {
+        icon: '⏰',
+        duration: 4000,
+      });
+    } else {
+      toast('Auto-fetch disabled.', { icon: '⏸️' });
+    }
+  }, [handleAutoFetchData]);
 
   const handleSaveApiKey = (apiKey: string) => {
     sessionStorage.setItem('geminiApiKey', apiKey);
@@ -92,7 +133,7 @@ const App: React.FC = () => {
           latestPrediction={predictionHistory[0]}
         />
 
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8 flex-wrap">
             <LotterySelector
               selectedLottery={selectedLottery}
               onSelectLottery={setSelectedLottery}
@@ -113,6 +154,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap justify-center items-center gap-2">
+              {/* Refresh Button */}
               <button
                 onClick={handleRefreshData}
                 className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md disabled:opacity-50"
@@ -126,6 +168,57 @@ const App: React.FC = () => {
                   <path d="M3 21v-5h5"/>
                 </svg>
                 Refresh
+              </button>
+
+              {/* Auto-Fetch Toggle */}
+              <button
+                onClick={handleToggleAutoFetch}
+                disabled={isSimulationMode}
+                title={autoFetchEnabled 
+                  ? `Auto-fetch ON · Next: ${autoFetchStatus.nextFetchTime ? new Date(autoFetchStatus.nextFetchTime).toLocaleString('vi-VN') : 'Soon'}`
+                  : 'Enable auto-fetch after each draw'
+                }
+                className={`flex items-center gap-2 text-sm px-4 py-2 rounded-xl transition-all border shadow-md disabled:opacity-50 ${
+                  autoFetchEnabled
+                    ? 'bg-emerald-600/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-600/30'
+                    : 'bg-slate-800/80 text-slate-300 hover:text-white border-slate-700 hover:bg-slate-700'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                {autoFetchEnabled ? `Auto ✓` : 'Auto-Fetch'}
+                {autoFetchEnabled && autoFetchStatus.fetchCount > 0 && (
+                  <span className="bg-emerald-500/20 text-emerald-300 text-xs px-1.5 py-0.5 rounded-full">
+                    {autoFetchStatus.fetchCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Backtest Button */}
+              <button
+                onClick={() => setIsBacktestOpen(true)}
+                className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-violet-400">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                Backtest
+              </button>
+
+              {/* Self-Learning Button */}
+              <button
+                onClick={() => setIsSelfLearningOpen(true)}
+                className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-400">
+                  <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+                  <path d="M9 21h6"/>
+                  <path d="M10 17v4"/>
+                  <path d="M14 17v4"/>
+                </svg>
+                Self-Learn
               </button>
 
               <button
@@ -169,7 +262,7 @@ const App: React.FC = () => {
       </main>
       <Footer />
 
-      {/* Modals go here */}
+      {/* Modals */}
       {isDataModalOpen && (
         <DataManagementModal
           isOpen={isDataModalOpen}
@@ -215,6 +308,27 @@ const App: React.FC = () => {
           <AdminDashboard
             isOpen={isAdminDashboardOpen}
             onClose={() => setIsAdminDashboardOpen(false)}
+          />
+        </ErrorBoundary>
+      )}
+      {isBacktestOpen && (
+        <ErrorBoundary fallbackMessage="The Backtest panel encountered an error.">
+          <BacktestPanel
+            isOpen={isBacktestOpen}
+            onClose={() => setIsBacktestOpen(false)}
+            history={history}
+            lotteryType={selectedLottery}
+          />
+        </ErrorBoundary>
+      )}
+      {isSelfLearningOpen && (
+        <ErrorBoundary fallbackMessage="The Self-Learning panel encountered an error.">
+          <SelfLearningPanel
+            isOpen={isSelfLearningOpen}
+            onClose={() => setIsSelfLearningOpen(false)}
+            predictionHistory={predictionHistory}
+            drawHistory={history}
+            lotteryType={selectedLottery}
           />
         </ErrorBoundary>
       )}
