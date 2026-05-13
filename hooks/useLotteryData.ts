@@ -14,7 +14,7 @@ export const useLotteryData = (selectedLottery: LotteryType) => {
       const storageKey = `drawHistory_${selectedLottery}`;
 
       try {
-        const realData = await lotteryDataService.getLotteryData(selectedLottery, true, 100);
+        const realData = await lotteryDataService.getLotteryData(selectedLottery, true, 2000);
         if (realData && realData.length > 0) {
           setHistory(realData);
           setIsUsingRealData(await lotteryDataService.isUsingRealData(selectedLottery));
@@ -57,7 +57,7 @@ export const useLotteryData = (selectedLottery: LotteryType) => {
   const refreshData = useCallback(async () => {
     setIsLoadingRealData(true);
     try {
-      const refreshedData = await lotteryDataService.refreshData(selectedLottery, 100);
+      const refreshedData = await lotteryDataService.refreshData(selectedLottery, 2000);
       setHistory(refreshedData);
       setIsUsingRealData(await lotteryDataService.isUsingRealData(selectedLottery));
       localStorage.setItem(`drawHistory_${selectedLottery}`, JSON.stringify(refreshedData));

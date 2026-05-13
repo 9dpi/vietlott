@@ -1,24 +1,16 @@
 @echo off
 echo ============================================
-echo  Vietlott AI - Push ban dich tieng Viet
+echo  Vietlott AI - Tich Hop Du Lieu Lich Su
 echo ============================================
 cd /d "d:\Automator_Prj\Vlot\vietlott"
 git add -A
-git commit -m "feat: Chuyen toan bo giao dien sang tieng Viet
+git commit -m "feat: Tich hop toan bo du lieu lich su truc tiep vao app
 
-- Header: Ten app va mo ta bang tieng Viet
-- Footer: Tuyen bo mien trach nhiem tieng Viet
-- Toolbar: Tat ca nut bam (Lam Moi, Tu Dong, Backtest, Tu Hoc, v.v.)
-- Dashboard: Phan tich lich su, bang ket qua, heatmap
-- PredictionPanel: Chon chien luoc, tao du doan, ket qua AI
-- PredictionHistory: Lich su du doan, cot ket qua
-- SimulationControls: Che do mo phong
-- BacktestPanel: Cau hinh, ket qua, bieu do, bang chi tiet
-- SelfLearningPanel: He thong tu hoc, insights, khuyen nghi
-- AI_STRATEGIES: Ten chien luoc bang tieng Viet
-- Toast messages: Thong bao bang tieng Viet"
+- Su dung power655.jsonl.txt lam nguon du lieu chinh thong qua Vite asset import (?url)
+- Tang muc gioi han lay du lieu tu 100 len 2000 ky (Lay toan bo)
+- App se tu dong co 1,344+ ky quay cho Backtest va Self-Learning ma khong can import thu cong"
 git push origin main
 echo.
-echo Hoan thanh! Kiem tra GitHub Actions tai:
-echo https://github.com/9dpi/vietlott/actions
+echo Hoan thanh! Site se cap nhat tai:
+echo https://9dpi.github.io/vietlott/
 pause

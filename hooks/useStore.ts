@@ -30,6 +30,9 @@ interface AppState {
 
   isSelfLearningOpen: boolean;
   setIsSelfLearningOpen: (isOpen: boolean) => void;
+
+  isDataImportOpen: boolean;
+  setIsDataImportOpen: (isOpen: boolean) => void;
   
   inspectedNumber: number | null;
   setInspectedNumber: (number: number | null) => void;
@@ -83,6 +86,9 @@ export const useStore = create<AppState>((set, get) => {
 
     isSelfLearningOpen: false,
     setIsSelfLearningOpen: (isOpen) => set({ isSelfLearningOpen: isOpen }),
+
+    isDataImportOpen: false,
+    setIsDataImportOpen: (isOpen) => set({ isDataImportOpen: isOpen }),
 
     inspectedNumber: null,
     setInspectedNumber: (num) => set({ inspectedNumber: num }),

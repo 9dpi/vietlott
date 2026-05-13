@@ -1,9 +1,11 @@
 import { LotteryType, DrawResult } from '../types.ts';
 import { LOTTERY_TYPES } from '../constants.ts';
 
-// GitHub repository data URLs
+import power655Url from '../power655.jsonl.txt?url';
+
+// GitHub repository data URLs (or local fallbacks)
 const DATA_URLS = {
-  [LOTTERY_TYPES.POWER]: 'https://raw.githubusercontent.com/vietvudanh/vietlott-data/master/data/power655.jsonl',
+  [LOTTERY_TYPES.POWER]: power655Url, // Using local file for better reliability and complete history
   [LOTTERY_TYPES.MEGA]: 'https://raw.githubusercontent.com/vietvudanh/vietlott-data/master/data/power645.jsonl'
 };
 
@@ -57,11 +59,13 @@ export async function fetchRealLotteryData(
     // Convert to our DrawResult format and sort by date (newest first)
     const drawResults: DrawResult[] = rawData
       .map(entry => convertToDrawResult(entry, lotteryType))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, limit);
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    console.log(`Successfully fetched ${drawResults.length} real lottery results for ${lotteryType}`);
-    return drawResults;
+    // Only limit if limit is provided and less than total length
+    const finalResults = limit && limit < drawResults.length ? drawResults.slice(0, limit) : drawResults;
+
+    console.log(`Successfully fetched ${finalResults.length} real lottery results for ${lotteryType}`);
+    return finalResults;
 
   } catch (error) {
     console.error(`Error fetching real lottery data for ${lotteryType}:`, error);
@@ -113,9 +117,9 @@ export function isRealDataAvailable(lotteryType: LotteryType): boolean {
  */
 export function getDataSourceInfo() {
   return {
-    source: 'vietlott-data GitHub Repository',
+    source: 'Local Dataset & vietlott-data GitHub Repository',
     url: 'https://github.com/vietvudanh/vietlott-data',
-    description: 'Automated Vietnamese Lottery Data Collection & Analysis',
+    description: 'Local complete history for Power 6/55, external for Mega 6/45',
     updateFrequency: 'Daily',
     coverage: 'Historical data from 2017 to present'
   };

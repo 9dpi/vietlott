@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { DrawResult, LotteryType } from '../types';
-import { backtestService, BacktestConfig, BacktestSummary, SingleBacktestResult } from '../services/backtestService';
+import { backtestService, BacktestConfig, BacktestSummary } from '../services/backtestService';
 import { LOTTERY_TYPES } from '../constants';
+import { mergeWithHistorical, hasHistoricalData, getHistoricalData } from '../services/historicalDataService';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, ReferenceLine
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 
 interface BacktestPanelProps {
@@ -48,7 +49,7 @@ const MetricCard: React.FC<{ label: string; value: string | number; sub?: string
 export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, history, lotteryType }) => {
   const [strategy, setStrategy] = useState<BacktestConfig['strategy']>('BALANCED');
   const [lookback, setLookback] = useState(20);
-  const [testDraws, setTestDraws] = useState(50);
+  const [testDraws, setTestDraws] = useState(100);
   const [selectedLottery, setSelectedLottery] = useState<LotteryType>(lotteryType);
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -57,6 +58,16 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'chart' | 'table'>('chart');
   const isMounted = useRef(true);
+
+  // Merge dữ liệu lịch sử đã import với dữ liệu hiện tại
+  const [mergedHistory, setMergedHistory] = useState<DrawResult[]>(history);
+  const [hasHistorical, setHasHistorical] = useState(false);
+
+  useEffect(() => {
+    const merged = mergeWithHistorical(history, selectedLottery);
+    setMergedHistory(merged);
+    setHasHistorical(hasHistoricalData(selectedLottery));
+  }, [history, selectedLottery]);
 
   useEffect(() => {
     isMounted.current = true;
@@ -78,11 +89,11 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
           lookbackPeriod: lookback,
           testDraws,
         },
-        history,
+        mergedHistory,   // ← dùng dữ liệu đã merge
         (pct, cur, tot) => {
           if (isMounted.current) {
             setProgress(pct);
-            setProgressText(`Testing draw ${cur} of ${tot}...`);
+            setProgressText(`Đang kiểm tra kỳ ${cur}/${tot}...`);
           }
         }
       );
@@ -100,9 +111,10 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
         setIsRunning(false);
       }
     }
-  }, [selectedLottery, strategy, lookback, testDraws, history]);
+  }, [selectedLottery, strategy, lookback, testDraws, mergedHistory]);
 
-  const availableDraws = history.filter(d => d.lotteryType === selectedLottery).length;
+  const availableDraws = mergedHistory.filter(d => d.lotteryType === selectedLottery).length;
+  const maxTestDraws = Math.min(1300, Math.max(10, availableDraws - lookback));
 
   if (!isOpen) return null;
 
@@ -119,12 +131,22 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
               Kiểm tra hiệu quả chiến lược trên dữ liệu lịch sử
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-700"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Data source badge */}
+            <div className={`text-xs px-2.5 py-1 rounded-full border font-medium ${
+              hasHistorical
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+            }`}>
+              {availableDraws.toLocaleString()} kỳ {hasHistorical ? '📂 Lịch sử' : '🌐 Thực tế'}
+            </div>
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-700"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -194,17 +216,17 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
 
               <div>
                 <label className="text-sm font-medium text-slate-300 mb-2 block">
-                  Kiểm tra: <span className="text-indigo-400 font-bold">{Math.min(testDraws, Math.max(0, availableDraws - lookback))} kỳ</span>
-                  <span className="text-slate-500 text-xs ml-2">({availableDraws} kỳ có sẵn)</span>
+                  Kiểm tra: <span className="text-indigo-400 font-bold">{Math.min(testDraws, maxTestDraws)} kỳ</span>
+                  <span className="text-slate-500 text-xs ml-2">({availableDraws.toLocaleString()} kỳ có sẵn)</span>
                 </label>
                 <input
-                  type="range" min="10" max="200" step="10" value={testDraws}
+                  type="range" min="10" max={Math.max(10, maxTestDraws)} step="10" value={testDraws}
                   onChange={e => setTestDraws(+e.target.value)}
                   disabled={isRunning}
                   className="w-full accent-indigo-500"
                 />
                 <div className="flex justify-between text-xs text-slate-500 mt-1">
-                  <span>10</span><span>200</span>
+                  <span>10</span><span>{Math.max(10, maxTestDraws)}</span>
                 </div>
               </div>
 

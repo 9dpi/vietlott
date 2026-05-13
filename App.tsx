@@ -13,6 +13,7 @@ import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 import { BacktestPanel } from './components/BacktestPanel.tsx';
 import { SelfLearningPanel } from './components/SelfLearningPanel.tsx';
+import { DataImportPanel } from './components/DataImportPanel.tsx';
 import { Toaster, toast } from 'react-hot-toast';
 
 import { startupServices } from './services/startup.ts';
@@ -35,6 +36,7 @@ const App: React.FC = () => {
     isAdminDashboardOpen, setIsAdminDashboardOpen,
     isBacktestOpen, setIsBacktestOpen,
     isSelfLearningOpen, setIsSelfLearningOpen,
+    isDataImportOpen, setIsDataImportOpen,
     inspectedNumber, setInspectedNumber
   } = useStore();
 
@@ -221,6 +223,19 @@ const App: React.FC = () => {
                 Tự Học
               </button>
 
+              {/* Import Dữ Liệu */}
+              <button
+                onClick={() => setIsDataImportOpen(true)}
+                className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Nhập Dữ Liệu
+              </button>
+
               <button
                 onClick={() => setIsDataModalOpen(true)}
                 className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md disabled:opacity-50"
@@ -329,6 +344,17 @@ const App: React.FC = () => {
             predictionHistory={predictionHistory}
             drawHistory={history}
             lotteryType={selectedLottery}
+          />
+        </ErrorBoundary>
+      )}
+      {isDataImportOpen && (
+        <ErrorBoundary fallbackMessage="Lỗi khi mở panel import.">
+          <DataImportPanel
+            isOpen={isDataImportOpen}
+            onClose={() => setIsDataImportOpen(false)}
+            onDataImported={(lotteryType) => {
+              toast.success(`Đã import dữ liệu lịch sử ${lotteryType} thành công!`, { icon: '📊', duration: 4000 });
+            }}
           />
         </ErrorBoundary>
       )}
