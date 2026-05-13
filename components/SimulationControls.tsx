@@ -30,7 +30,7 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <label htmlFor="sim-toggle" className="flex items-center cursor-pointer">
-            <span className="text-lg font-bold text-white mr-3">Simulator</span>
+            <span className="text-lg font-bold text-white mr-3">Chế Độ Mô Phỏng</span>
             <div className="relative">
               <input id="sim-toggle" type="checkbox" className="sr-only" checked={isSimulationMode} onChange={(e) => onToggle(e.target.checked)} />
               <div className="block bg-slate-700 w-14 h-8 rounded-full"></div>
@@ -42,7 +42,7 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
         {isSimulationMode && (
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex items-center gap-2">
-              <label htmlFor="sim-date" className="text-sm font-medium text-slate-300">Test Date:</label>
+              <label htmlFor="sim-date" className="text-sm font-medium text-slate-300">Ngày kiểm tra:</label>
               <input
                 id="sim-date"
                 type="date"
@@ -57,16 +57,16 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
               onClick={onReveal}
               disabled={!canReveal}
               className="w-full sm:w-auto bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={!canReveal ? "Generate a prediction for the selected date to enable reveal." : "Reveal the next draw"}
+              title={!canReveal ? "Hãy tạo dự đoán cho ngày đã chọn trước khi xem kết quả." : "Xem kết quả kỳ tiếp theo"}
             >
-              Reveal Next Draw
+              Xem Kết Quả
             </button>
           </div>
         )}
       </div>
       {isSimulationMode && (
         <p className="text-center text-xs text-yellow-300/80 mt-3 pt-3 border-t border-slate-700/50">
-          <strong>Simulation Mode is Active:</strong> All data and predictions are based on the state as of {new Date(simulationDate).toLocaleDateString()}.
+          <strong>Chế Độ Mô Phỏng Đang Bật:</strong> Toàn bộ dữ liệu và dự đoán dựa trên trạng thái tại ngày {new Date(simulationDate).toLocaleDateString('vi-VN')}.
         </p>
       )}
     </div>

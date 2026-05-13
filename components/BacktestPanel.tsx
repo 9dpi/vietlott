@@ -14,10 +14,10 @@ interface BacktestPanelProps {
 }
 
 const STRATEGY_OPTIONS: { value: BacktestConfig['strategy']; label: string; desc: string }[] = [
-  { value: 'HOT', label: '🔥 Hot Numbers', desc: 'Focus on most frequent recent numbers' },
-  { value: 'COLD', label: '❄️ Cold Numbers', desc: 'Focus on least frequent (due) numbers' },
-  { value: 'BALANCED', label: '⚖️ Balanced', desc: 'Mix of hot & cold numbers' },
-  { value: 'RANDOM', label: '🎲 Random', desc: 'Purely random baseline' },
+  { value: 'HOT', label: '🔥 Số Nóng', desc: 'Tập trung vào các số xuất hiện nhiều nhất' },
+  { value: 'COLD', label: '❄️ Số Lạnh', desc: 'Tập trung vào các số xuất hiện ít nhất' },
+  { value: 'BALANCED', label: '⚖️ Cân Bằng', desc: 'Kết hợp số nóng và số lạnh' },
+  { value: 'RANDOM', label: '🏒 Ngẫu Nhiên', desc: 'Chọn ngẫu nhiên làm đường cơ sở' },
 ];
 
 const MatchBadge: React.FC<{ count: number }> = ({ count }) => {
@@ -113,10 +113,10 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
         <div className="flex items-center justify-between p-6 border-b border-slate-700 flex-shrink-0">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              <span>📊</span> Backtest Engine
+              <span>📊</span> Công Cụ Backtest
             </h2>
             <p className="text-slate-400 text-sm mt-1">
-              Simulate predictions on historical data to evaluate strategy performance
+              Kiểm tra hiệu quả chiến lược trên dữ liệu lịch sử
             </p>
           </div>
           <button
@@ -134,7 +134,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
             {/* Left: Lottery & Strategy */}
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Lottery Type</label>
+                <label className="text-sm font-medium text-slate-300 mb-2 block">Loại Xổ Số</label>
                 <div className="flex gap-2">
                   {Object.values(LOTTERY_TYPES).map(type => (
                     <button
@@ -154,7 +154,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Strategy</label>
+                <label className="text-sm font-medium text-slate-300 mb-2 block">Chiến Lược</label>
                 <div className="grid grid-cols-2 gap-2">
                   {STRATEGY_OPTIONS.map(s => (
                     <button
@@ -179,7 +179,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-slate-300 mb-2 block">
-                  Lookback Period: <span className="text-indigo-400 font-bold">{lookback} draws</span>
+                  Lookback: <span className="text-indigo-400 font-bold">{lookback} kỳ phân tích</span>
                 </label>
                 <input
                   type="range" min="5" max="50" step="5" value={lookback}
@@ -188,14 +188,14 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                   className="w-full accent-indigo-500"
                 />
                 <div className="flex justify-between text-xs text-slate-500 mt-1">
-                  <span>5 (short)</span><span>50 (long)</span>
+                  <span>5 (ngắn)</span><span>50 (dài)</span>
                 </div>
               </div>
 
               <div>
                 <label className="text-sm font-medium text-slate-300 mb-2 block">
-                  Test on: <span className="text-indigo-400 font-bold">{Math.min(testDraws, Math.max(0, availableDraws - lookback))} draws</span>
-                  <span className="text-slate-500 text-xs ml-2">({availableDraws} available)</span>
+                  Kiểm tra: <span className="text-indigo-400 font-bold">{Math.min(testDraws, Math.max(0, availableDraws - lookback))} kỳ</span>
+                  <span className="text-slate-500 text-xs ml-2">({availableDraws} kỳ có sẵn)</span>
                 </label>
                 <input
                   type="range" min="10" max="200" step="10" value={testDraws}
@@ -216,12 +216,12 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                 {isRunning ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
-                    <span>Running... {progress}%</span>
+                    <span>Đang chạy... {progress}%</span>
                   </>
                 ) : (
                   <>
                     <span>▶</span>
-                    <span>Run Backtest</span>
+                    <span>Chạy Backtest</span>
                   </>
                 )}
               </button>
@@ -257,25 +257,25 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
               {/* Metrics */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <MetricCard
-                  label="Draws Tested"
+                  label="Kỳ đã kiểm tra"
                   value={summary.totalDrawsTested}
-                  sub={`Strategy: ${summary.strategy}`}
+                  sub={`Chiến lược: ${summary.strategy}`}
                 />
                 <MetricCard
-                  label="Avg Matches / Draw"
+                  label="TB số khớp / kỳ"
                   value={summary.metrics.averageMatches.toFixed(2)}
-                  sub={`out of ${summary.lotteryType === 'Power 6/55' ? 6 : 6} numbers`}
+                  sub={`trên ${summary.lotteryType === 'Power 6/55' ? 6 : 6} số`}
                   color="text-violet-400"
                 />
                 <MetricCard
-                  label="Win Rate (3+ matches)"
+                  label="Tỷ lệ thắng (≥3 số)"
                   value={`${summary.metrics.winRate.toFixed(1)}%`}
-                  sub="At least 3 numbers correct"
+                  sub="Ít nhất 3 số đúng"
                   color={summary.metrics.winRate > 10 ? 'text-emerald-400' : 'text-amber-400'}
                 />
                 <MetricCard
-                  label="Best Result"
-                  value={summary.metrics.bestResult ? `${summary.metrics.bestResult.matchCount} matches` : 'N/A'}
+                  label="Kết quả tốt nhất"
+                  value={summary.metrics.bestResult ? `${summary.metrics.bestResult.matchCount} khớp` : 'N/A'}
                   sub={summary.metrics.bestResult?.prize}
                   color="text-amber-400"
                 />
@@ -283,7 +283,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
 
               {/* Match Distribution */}
               <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-                <h3 className="text-sm font-semibold text-slate-300 mb-3">Match Distribution</h3>
+                <h3 className="text-sm font-semibold text-slate-300 mb-3">Phân Phối Số Khớp</h3>
                 <div className="flex items-end gap-2 h-24">
                   {[0, 1, 2, 3, 4, 5, 6].map(n => {
                     const count = summary.metrics.matchDistribution[n] || 0;
@@ -307,7 +307,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                     );
                   })}
                 </div>
-                <p className="text-xs text-slate-500 mt-2 text-center">Number of matches per draw</p>
+                <p className="text-xs text-slate-500 mt-2 text-center">Số lượng số khớp mỗi kỳ</p>
               </div>
 
               {/* Tabs */}
@@ -323,7 +323,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                           : 'bg-slate-700/50 text-slate-400 hover:text-white'
                       }`}
                     >
-                      {tab === 'chart' ? '📈 Performance Chart' : '📋 Result Table'}
+                      {tab === 'chart' ? '📈 Biểu Đồ Hiệu Suất' : '📋 Bảng Kết Quả'}
                     </button>
                   ))}
                 </div>
@@ -331,7 +331,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                 {/* Chart Tab */}
                 {activeTab === 'chart' && (
                   <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-                    <h3 className="text-sm font-semibold text-slate-300 mb-3">Matches per Draw Over Time</h3>
+                    <h3 className="text-sm font-semibold text-slate-300 mb-3">Số Khớp Theo Thời Gian</h3>
                     <ResponsiveContainer width="100%" height={220}>
                       <LineChart data={summary.chartData.slice(-50)}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -339,9 +339,9 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                         <YAxis domain={[0, 6]} ticks={[0,1,2,3,4,5,6]} tick={{ fontSize: 10, fill: '#64748b' }} tickLine={false} axisLine={false} />
                         <Tooltip
                           contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#e2e8f0' }}
-                          formatter={(val: number) => [`${val} matches`, 'Matches']}
+                          formatter={(val: number) => [`${val} khớp`, 'Số khớp']}
                         />
-                        <ReferenceLine y={3} stroke="#6366f1" strokeDasharray="4 4" label={{ value: 'Win threshold', fill: '#6366f1', fontSize: 11 }} />
+                        <ReferenceLine y={3} stroke="#6366f1" strokeDasharray="4 4" label={{ value: 'Ngưỡng thắng', fill: '#6366f1', fontSize: 11 }} />
                         <Line type="monotone" dataKey="matches" stroke="#8b5cf6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#8b5cf6' }} />
                       </LineChart>
                     </ResponsiveContainer>
@@ -355,11 +355,11 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
                       <table className="w-full text-xs text-left">
                         <thead className="bg-slate-800 sticky top-0 text-slate-400 uppercase text-xs">
                           <tr>
-                            <th className="px-3 py-2">Date</th>
-                            <th className="px-3 py-2">Actual Numbers</th>
-                            <th className="px-3 py-2">Predicted</th>
-                            <th className="px-3 py-2">Matches</th>
-                            <th className="px-3 py-2">Prize</th>
+                            <th className="px-3 py-2">Ngày</th>
+                            <th className="px-3 py-2">Kết quả thực</th>
+                            <th className="px-3 py-2">Dự đoán</th>
+                            <th className="px-3 py-2">Khớp</th>
+                            <th className="px-3 py-2">Giải</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -420,7 +420,7 @@ export const BacktestPanel: React.FC<BacktestPanelProps> = ({ isOpen, onClose, h
 
               {/* Prize Distribution */}
               <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
-                <h3 className="text-sm font-semibold text-slate-300 mb-3">Prize Distribution</h3>
+                <h3 className="text-sm font-semibold text-slate-300 mb-3">Phân Bố Giải Thưởng</h3>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(summary.metrics.prizeDistribution)
                     .sort(([, a], [, b]) => b - a)

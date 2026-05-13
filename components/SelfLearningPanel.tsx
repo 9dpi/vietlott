@@ -93,10 +93,10 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
         <div className="flex items-center justify-between p-6 border-b border-slate-700 flex-shrink-0">
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              <span>🧠</span> Self-Learning System
+              <span>🧠</span> Hệ Thống Tự Học
             </h2>
             <p className="text-slate-400 text-sm mt-1">
-              AI analyzes past predictions to continuously improve accuracy
+              AI phân tích dự đoán cũ để liên tục cải thiện độ chính xác
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -125,7 +125,7 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
           {/* Last run */}
           {lastRun && (
             <p className="text-xs text-slate-500 text-center">
-              Last analyzed: {lastRun} · {predictionHistory.length} predictions loaded · {pendingPredictions.length} pending results
+              Phân tích lần cuối: {lastRun} · {predictionHistory.length} dự đoán · {pendingPredictions.length} chờ kết quả
             </p>
           )}
 
@@ -133,18 +133,18 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
           {metrics && metrics.totalPredictions > 0 ? (
             <>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <StatBadge value={metrics.totalPredictions} label="Total Analyzed" />
-                <StatBadge value={`${(metrics.averageAccuracy * 100).toFixed(1)}%`} label="Avg Accuracy" color="text-violet-400" />
-                <StatBadge value={`${(metrics.bestAccuracy * 100).toFixed(1)}%`} label="Best Result" color="text-emerald-400" />
-                <StatBadge value={`${(metrics.recentPerformance * 100).toFixed(1)}%`} label="Recent (last 10)" color="text-amber-400" />
+                <StatBadge value={metrics.totalPredictions} label="Tổng đã phân tích" />
+                <StatBadge value={`${(metrics.averageAccuracy * 100).toFixed(1)}%`} label="Độ chính xác TB" color="text-violet-400" />
+                <StatBadge value={`${(metrics.bestAccuracy * 100).toFixed(1)}%`} label="Kết quả tốt nhất" color="text-emerald-400" />
+                <StatBadge value={`${(metrics.recentPerformance * 100).toFixed(1)}%`} label="Gần đây (10 lần)" color="text-amber-400" />
               </div>
 
               {/* Trend */}
               <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-slate-300">Accuracy Trend</p>
-                    <p className="text-xs text-slate-500 mt-0.5">Compared to previous 10 predictions</p>
+                    <p className="text-sm font-semibold text-slate-300">Xu Hướng Độ Chính Xác</p>
+                    <p className="text-xs text-slate-500 mt-0.5">So với 10 dự đoán trước</p>
                   </div>
                   <div className="text-lg font-bold">
                     <TrendArrow trend={metrics.improvementTrend} />
@@ -154,7 +154,7 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
                 {/* Simple visual trend bar */}
                 <div className="mt-3 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 w-20">Recent avg</span>
+                    <span className="text-xs text-slate-500 w-20">Gần đây</span>
                     <div className="flex-1 bg-slate-800 rounded-full h-2">
                       <div
                         className="h-2 rounded-full bg-indigo-500"
@@ -164,7 +164,7 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
                     <span className="text-xs text-slate-400 w-10 text-right">{(metrics.recentPerformance * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 w-20">Overall avg</span>
+                    <span className="text-xs text-slate-500 w-20">Tổng thể</span>
                     <div className="flex-1 bg-slate-800 rounded-full h-2">
                       <div
                         className="h-2 rounded-full bg-slate-500"
@@ -180,7 +180,7 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
               {insights.length > 0 && (
                 <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
                   <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                    <span>💡</span> Statistical Insights
+                    <span>💡</span> Phân Tích Thống Kê
                   </h3>
                   <ul className="space-y-2">
                     {insights.map((insight, i) => (
@@ -197,7 +197,7 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
               {recommendations.length > 0 && (
                 <div className="bg-slate-900/50 rounded-xl p-4 border border-emerald-700/30">
                   <h3 className="text-sm font-semibold text-emerald-300 mb-3 flex items-center gap-2">
-                    <span>🎯</span> AI Recommendations
+                    <span>🎯</span> Khuyến Nghị AI
                   </h3>
                   <ul className="space-y-2">
                     {recommendations.map((rec, i) => (
@@ -213,19 +213,19 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
           ) : (
             <div className="text-center py-16">
               <div className="text-5xl mb-4">🎓</div>
-              <h3 className="text-xl font-semibold text-white mb-2">Not Enough Data Yet</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">Chưa Đủ Dữ Liệu</h3>
               <p className="text-slate-400 text-sm max-w-sm mx-auto">
-                Generate predictions and wait for actual draw results to appear. The system will
-                automatically compare and learn from each prediction you make.
+                Hãy tạo dự đoán và chờ kết quả thực tế. Hệ thống sẽ tự động
+                so sánh và học hỏi từ mỗi dự đoán bạn thực hiện.
               </p>
               <div className="mt-6 p-4 bg-slate-900/50 rounded-xl border border-slate-700/50 text-left">
-                <p className="text-xs font-semibold text-slate-300 mb-2">How it works:</p>
+                <p className="text-xs font-semibold text-slate-300 mb-2">Cách hoạt động:</p>
                 <ol className="text-xs text-slate-400 space-y-1 list-decimal list-inside">
-                  <li>Generate an AI prediction for today's draw</li>
-                  <li>After the draw, refresh data to get the actual result</li>
-                  <li>The system automatically compares your prediction</li>
-                  <li>It identifies patterns in your hits and misses</li>
-                  <li>Future predictions incorporate these learnings</li>
+                  <li>Tạo dự đoán AI cho kỳ quay hôm nay</li>
+                  <li>Sau kỳ quay, nhấn &quot;Làm Mới&quot; để lấy kết quả thực</li>
+                  <li>Hệ thống tự động so sánh dự đoán của bạn</li>
+                  <li>Xác định pattern trong các số đúng và sai</li>
+                  <li>Dự đoán tương lai sẽ tích hợp các học hỏi này</li>
                 </ol>
               </div>
             </div>
@@ -234,10 +234,10 @@ export const SelfLearningPanel: React.FC<SelfLearningPanelProps> = ({
           {/* Info box */}
           <div className="bg-indigo-900/20 border border-indigo-700/30 rounded-xl p-4">
             <p className="text-xs text-indigo-300 leading-relaxed">
-              <strong>ℹ️ About Self-Learning:</strong> The system tracks every prediction you generate
-              and compares it to the actual draw result. It identifies which number ranges, patterns,
-              and strategies perform best for you over time, then feeds that intelligence back into
-              future predictions automatically.
+              <strong>ℹ️ Về Tính Năng Tự Học:</strong> Hệ thống theo dõi mọi dự đoán bạn tạo
+              và so sánh với kết quả thực tế của kỳ quay. Nó xác định phạm vi số, pattern
+              và chiến lược nào hoạt động tốt nhất theo thời gian, sau đó tự động đưa
+              thông tin đó vào các dự đoán tương lai.
             </p>
           </div>
         </div>

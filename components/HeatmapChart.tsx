@@ -27,10 +27,10 @@ const HeatmapCell: React.FC<{
         {number}
       </button>
       <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max px-3 py-2 bg-slate-950 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-        <p className="font-bold text-base text-center mb-1">Number {number}</p>
-        <p><strong>Drawn:</strong> {count} times</p>
-        <p><strong>Last Seen:</strong> {lastSeenIndex === 0 ? 'Last draw' : `${lastSeenIndex} draws ago`}</p>
-        {isMomentum && <p className="font-semibold text-cyan-400">Has Momentum</p>}
+        <p className="font-bold text-base text-center mb-1">Số {number}</p>
+        <p><strong>Xuất hiện:</strong> {count} lần</p>
+        <p><strong>Lần cuối:</strong> {lastSeenIndex === 0 ? 'Kỳ gần nhất' : `${lastSeenIndex} kỳ trước`}</p>
+        {isMomentum && <p className="font-semibold text-cyan-400">Đang tăng xu hướng</p>}
       </div>
     </div>
   );
@@ -59,7 +59,7 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({ history, lotteryType
       
       const normalizedFreq = maxFreq > 0 ? count / maxFreq : 0;
       
-      // HSL color: 240 (blue for cold) -> 0 (red for hot)
+      // HSL color: 240 (blue = lạnh) -> 0 (red = nóng)
       const hue = (1 - normalizedFreq) * 240;
       const color = `hsl(${hue}, 80%, ${Math.max(20, 50 * normalizedFreq + 20)}%)`;
 
@@ -71,11 +71,11 @@ export const HeatmapChart: React.FC<HeatmapChartProps> = ({ history, lotteryType
   return (
     <div className="bg-slate-800 rounded-xl p-6 shadow-lg">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-white">Number Heatmap</h2>
+        <h2 className="text-xl font-bold text-white">Bản Đồ Nhiệt Các Số</h2>
         <div className="flex items-center space-x-4 text-xs text-slate-400">
-            <div className="flex items-center space-x-2"><div className="w-3 h-3 rounded-full bg-blue-600"></div><span>Cold</span></div>
-            <div className="flex items-center space-x-2"><div className="w-3 h-3 rounded-full bg-red-600"></div><span>Hot</span></div>
-            <div className="flex items-center space-x-2"><div className="w-3 h-3 rounded-full ring-2 ring-cyan-400 ring-offset-2 ring-offset-slate-800"></div><span>Momentum</span></div>
+            <div className="flex items-center space-x-2"><div className="w-3 h-3 rounded-full bg-blue-600"></div><span>Lạnh</span></div>
+            <div className="flex items-center space-x-2"><div className="w-3 h-3 rounded-full bg-red-600"></div><span>Nóng</span></div>
+            <div className="flex items-center space-x-2"><div className="w-3 h-3 rounded-full ring-2 ring-cyan-400 ring-offset-2 ring-offset-slate-800"></div><span>Xu hướng</span></div>
         </div>
       </div>
       <div className="grid grid-cols-7 sm:grid-cols-9 md:grid-cols-11 gap-2">

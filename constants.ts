@@ -24,19 +24,19 @@ export const LOTTERY_CONFIG: Record<LotteryType, LotteryConfig> = {
 
 export const AI_STRATEGIES: Record<AIStrategy, { label: string; description: string }> = {
   BALANCED: {
-    label: 'Balanced Mix',
-    description: 'A smart blend of hot, cold, and statistical analysis for a well-rounded pick.',
+    label: 'Cân Bằng',
+    description: 'Kết hợp thông minh giữa số nóng, số lạnh và phân tích thống kê.',
   },
   HOT_FOCUS: {
-    label: 'Hot Focus',
-    description: 'Prioritizes numbers that have appeared frequently in recent draws.',
+    label: 'Số Nóng',
+    description: 'Ưu tiên các số xuất hiện nhiều nhất trong các kỳ gần đây.',
   },
   COLD_FOCUS: {
-    label: 'Contrarian (Cold)',
-    description: 'Favors numbers that are statistically "due" and have appeared less often.',
+    label: 'Số Lạnh (Ngược chiều)',
+    description: 'Ưu tiên các số ít xuất hiện, đang "chờ" được chọn.',
   },
   CO_PILOT: {
-    label: 'AI Co-Pilot',
-    description: 'You lock in your lucky numbers, and the AI finds the best companions for them.',
+    label: 'AI Đồng Hành',
+    description: 'Bạn khóa số may mắn, AI tìm các số bổ sung tốt nhất.',
   }
 };

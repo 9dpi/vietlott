@@ -12,7 +12,6 @@ interface PredictionHistoryProps {
 
 export const PredictionHistory: React.FC<PredictionHistoryProps> = ({ predictions, drawHistory, onSelectNumber }) => {
   const findResult = (prediction: PredictionRecord) => {
-    // Find the closest draw on or after the prediction date
     const predictionDate = new Date(prediction.date).getTime();
     const futureDraws = drawHistory
       .filter(draw => 
@@ -40,20 +39,20 @@ export const PredictionHistory: React.FC<PredictionHistoryProps> = ({ prediction
 
   return (
     <div className="bg-slate-800 rounded-xl p-6 shadow-lg h-full">
-      <h2 className="text-xl font-bold text-white mb-4">My AI Predictions</h2>
+      <h2 className="text-xl font-bold text-white mb-4">Lịch Sử Dự Đoán AI</h2>
       {predictions.length === 0 ? (
         <div className="flex items-center justify-center h-full text-slate-500 py-10">
-          <p>Your generated predictions will appear here.</p>
+          <p>Các dự đoán AI sẽ xuất hiện tại đây.</p>
         </div>
       ) : (
         <div className="overflow-y-auto max-h-[352px] pr-2">
             <table className="w-full text-sm text-left text-slate-400">
                 <thead className="text-xs text-slate-300 uppercase bg-slate-700/50 sticky top-0 z-10 backdrop-blur-sm">
                     <tr>
-                      <th scope="col" className="px-4 py-3">Details</th>
-                      <th scope="col" className="px-4 py-3">Prediction</th>
-                      <th scope="col" className="px-4 py-3">Strategy</th>
-                      <th scope="col" className="px-4 py-3">Result</th>
+                      <th scope="col" className="px-4 py-3">Chi tiết</th>
+                      <th scope="col" className="px-4 py-3">Dự đoán</th>
+                      <th scope="col" className="px-4 py-3">Chiến lược</th>
+                      <th scope="col" className="px-4 py-3">Kết quả</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,11 +89,11 @@ export const PredictionHistory: React.FC<PredictionHistoryProps> = ({ prediction
                                 </td>
                                 <td className="px-4 py-3 text-xs">
                                   {result.status === 'Pending' ? (
-                                    <span className="text-slate-500">Pending</span>
+                                    <span className="text-slate-500">Chờ kết quả</span>
                                   ) : (
                                     <div className="font-semibold">
                                       <span className="text-green-400">{result.matchedCount} / {config.mainNumbers}</span>
-                                      {result.specialMatched && <span className="text-green-400 ml-1">+ S</span>}
+                                      {result.specialMatched && <span className="text-green-400 ml-1">+ ĐB</span>}
                                     </div>
                                   )}
                                 </td>

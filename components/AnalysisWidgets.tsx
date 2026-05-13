@@ -59,18 +59,18 @@ export const AnalysisWidgets: React.FC<AnalysisWidgetsProps> = ({ history, lotte
 
   return (
     <div className="mb-6">
-        <h2 className="text-xl font-bold text-white mb-4">Historical Analysis</h2>
+        <h2 className="text-xl font-bold text-white mb-4">Phân Tích Lịch Sử</h2>
         <div className="flex flex-col sm:flex-row gap-4">
             <StatCard 
-                label="Odd / Even" 
+                label="Lẻ / Chẵn" 
                 value={stats.oddEvenRatio}
-                description="Distribution of odd vs. even numbers in all draws."
+                description="Tỷ lệ phân bổ số lẻ và số chẵn trong tất cả các kỳ quay."
                 colorClass="text-cyan-400"
             />
             <StatCard 
-                label="Low / High" 
+                label="Thấp / Cao" 
                 value={stats.lowHighRatio}
-                description="Distribution of low vs. high numbers in all draws."
+                description="Tỷ lệ phân bổ số thấp và số cao trong tất cả các kỳ quay."
                 colorClass="text-amber-400"
             />
         </div>

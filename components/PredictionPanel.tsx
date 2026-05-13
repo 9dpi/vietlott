@@ -19,7 +19,7 @@ const StrategySelector: React.FC<{
   disabled: boolean;
 }> = ({ selectedStrategy, onSelectStrategy, disabled }) => (
   <div className="mb-6">
-    <h3 className="text-lg font-semibold text-white mb-3 text-center">Choose AI Strategy</h3>
+    <h3 className="text-lg font-semibold text-white mb-3 text-center">Chọn Chiến Lược AI</h3>
     <div className={`flex flex-col sm:flex-row justify-center gap-2 bg-slate-900/50 p-2 rounded-xl ${disabled ? 'opacity-50' : ''}`}>
       {(Object.keys(AI_STRATEGIES) as AIStrategy[]).map(key => (
         <button
@@ -60,13 +60,13 @@ const CoPilotPanel: React.FC<{
         
         const nums = value.split(/[\s,]+/).filter(Boolean).map(Number);
         if (nums.length > 2) {
-            setError('You can lock a maximum of 2 numbers.');
+            setError('Bạn chỉ được khóa tối đa 2 số.');
             return;
         }
 
         const uniqueNums = [...new Set(nums)];
         if (uniqueNums.some(n => n < 1 || n > config.range)) {
-            setError(`Numbers must be between 1 and ${config.range}.`);
+            setError(`Các số phải nằm trong khoảng từ 1 đến ${config.range}.`);
             return;
         }
 
@@ -76,13 +76,13 @@ const CoPilotPanel: React.FC<{
 
     return (
         <div className="mb-4 text-center">
-            <h3 className="text-lg font-semibold text-white mb-2">AI Co-Pilot (Optional)</h3>
-            <p className="text-sm text-slate-400 mb-3">Lock in your lucky numbers, and the AI will find the best companions.</p>
+            <h3 className="text-lg font-semibold text-white mb-2">AI Đồng Hành (Tùy chọn)</h3>
+            <p className="text-sm text-slate-400 mb-3">Khóa các số may mắn của bạn, AI sẽ tìm những số bổ sung tốt nhất.</p>
             <input 
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                placeholder="e.g., 7, 21"
+                placeholder="VD: 7, 21"
                 className="bg-slate-900 border border-slate-600 rounded-md p-2 w-full max-w-xs text-center focus:ring-2 focus:ring-brand-yellow focus:outline-none"
             />
             {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
@@ -103,7 +103,6 @@ export const PredictionPanel: React.FC<PredictionPanelProps> = ({ lotteryType, h
   const config: LotteryConfig = LOTTERY_CONFIG[lotteryType];
 
   useEffect(() => {
-    // Reset prediction when history changes (e.g., sim date change)
     setPrediction(null);
     setSpecialPrediction(null);
     setError(null);
@@ -141,16 +140,16 @@ export const PredictionPanel: React.FC<PredictionPanelProps> = ({ lotteryType, h
             lockedNumbers: lockedNumbers.length > 0 ? lockedNumbers : undefined
         });
       } else {
-        setError('The AI could not generate a prediction. Please try again.');
+        setError('AI không thể tạo dự đoán. Vui lòng thử lại.');
       }
     } catch (err) {
       console.error(err);
       if (err instanceof Error && err.message === 'NO_API_KEY') {
         onRequestApiKey();
-        setError('Please provide your Gemini API key to use the AI features.');
+        setError('Vui lòng cung cấp Gemini API Key để sử dụng tính năng AI.');
       } else {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-        setError(`An error occurred while communicating with the AI. ${errorMessage}`);
+        const errorMessage = err instanceof Error ? err.message : 'Đã xảy ra lỗi không xác định.';
+        setError(`Lỗi khi kết nối với AI. ${errorMessage}`);
       }
     } finally {
       setIsLoading(false);
@@ -159,8 +158,8 @@ export const PredictionPanel: React.FC<PredictionPanelProps> = ({ lotteryType, h
 
   return (
     <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700/50 backdrop-blur-sm">
-      <h2 className="text-2xl font-bold text-white mb-2 text-center">AI Number Prediction</h2>
-      <p className="text-slate-400 mb-6 text-center">Let our AI analyze historical data to suggest your next lucky numbers.</p>
+      <h2 className="text-2xl font-bold text-white mb-2 text-center">Dự Đoán Số AI</h2>
+      <p className="text-slate-400 mb-6 text-center">AI phân tích dữ liệu lịch sử để đề xuất các con số may mắn cho bạn.</p>
       
       <CoPilotPanel config={config} lockedNumbers={lockedNumbers} onLockChange={setLockedNumbers} />
       <div className="w-full border-t border-slate-700/50 my-6"></div>
@@ -175,12 +174,12 @@ export const PredictionPanel: React.FC<PredictionPanelProps> = ({ lotteryType, h
           {isLoading ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-              <span>Generating...</span>
+              <span>Đang tạo dự đoán...</span>
             </>
           ) : (
             <>
               <BrainCircuitIcon className="w-6 h-6" />
-              <span>Generate Prediction</span>
+              <span>Tạo Dự Đoán</span>
             </>
           )}
         </button>
@@ -190,14 +189,14 @@ export const PredictionPanel: React.FC<PredictionPanelProps> = ({ lotteryType, h
       
       {(prediction || specialPrediction) && (
         <div className="mt-6 bg-slate-900/50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold text-center text-slate-300 mb-4">Your AI Generated Numbers:</h3>
+          <h3 className="text-lg font-semibold text-center text-slate-300 mb-4">Các Số AI Đề Xuất:</h3>
           <div className="flex flex-wrap justify-center items-center gap-3">
             {prediction?.map(num => <NumberBall key={num} number={num} className={config.ballColor} isLocked={lockedNumbers.includes(num)} />)}
             {specialPrediction != null && <NumberBall number={specialPrediction} className={config.specialBallColor || ''} />}
           </div>
           {reasoning && (
              <div className="mt-4 text-center">
-                <p className="text-sm font-semibold text-slate-300">AI Rationale:</p>
+                <p className="text-sm font-semibold text-slate-300">Lý giải của AI:</p>
                 <p className="text-xs text-slate-400 italic">"{reasoning}"</p>
              </div>
           )}

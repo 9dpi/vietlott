@@ -9,9 +9,12 @@ export const Header: React.FC = () => {
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-brand-red to-brand-yellow">
                 <span className="text-white font-bold text-2xl">AI</span>
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">
-                Vietlott AI Predictor
-            </h1>
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">
+                  Vietlott AI Dự Đoán
+              </h1>
+              <p className="text-xs text-slate-400 hidden sm:block">Phân tích thống kê & Dự đoán thông minh</p>
+            </div>
         </div>
       </div>
     </header>

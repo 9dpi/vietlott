@@ -14,13 +14,13 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({ data, lotteryType, o
 
   return (
     <div className="bg-slate-800 rounded-xl p-6 shadow-lg h-full">
-      <h2 className="text-xl font-bold text-white mb-4">Recent Draws</h2>
+      <h2 className="text-xl font-bold text-white mb-4">Kết Quả Gần Đây</h2>
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-slate-400">
           <thead className="text-xs text-slate-300 uppercase bg-slate-700/50">
             <tr>
-              <th scope="col" className="px-4 py-3">Draw</th>
-              <th scope="col" className="px-4 py-3">Numbers</th>
+              <th scope="col" className="px-4 py-3">Kỳ quay</th>
+              <th scope="col" className="px-4 py-3">Các số</th>
             </tr>
           </thead>
           <tbody>

@@ -84,12 +84,12 @@ const App: React.FC = () => {
     const nowEnabled = autoFetchService.toggle([handleAutoFetchData]);
     setAutoFetchEnabled(nowEnabled);
     if (nowEnabled) {
-      toast.success('Auto-fetch enabled. Results will update automatically after each draw.', {
+      toast.success('Đã bật tự động lấy kết quả. Hệ thống sẽ cập nhật sau mỗi kỳ quay.', {
         icon: '⏰',
         duration: 4000,
       });
     } else {
-      toast('Auto-fetch disabled.', { icon: '⏸️' });
+      toast('Đã tắt tự động lấy kết quả.', { icon: '⏸️' });
     }
   }, [handleAutoFetchData]);
 
@@ -106,9 +106,9 @@ const App: React.FC = () => {
   const handleRefreshData = async () => {
     const refreshPromise = refreshData();
     toast.promise(refreshPromise, {
-      loading: 'Refreshing data...',
-      success: 'Data refreshed successfully!',
-      error: 'Failed to refresh data',
+      loading: 'Đang làm mới dữ liệu...',
+      success: 'Cập nhật dữ liệu thành công!',
+      error: 'Không thể làm mới dữ liệu',
     });
   };
 
@@ -149,7 +149,7 @@ const App: React.FC = () => {
                 <div className={`w-2.5 h-2.5 rounded-full ${
                   isUsingRealData ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]'
                 }`}></div>
-                {isLoadingRealData ? 'Loading...' : (isUsingRealData ? 'Real Data' : 'Sample Data')}
+                {isLoadingRealData ? 'Đang tải...' : (isUsingRealData ? 'Dữ liệu thực' : 'Dữ liệu mẫu')}
               </div>
             </div>
 
@@ -159,7 +159,7 @@ const App: React.FC = () => {
                 onClick={handleRefreshData}
                 className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md disabled:opacity-50"
                 disabled={isSimulationMode || isLoadingRealData}
-                title="Refresh lottery data"
+                title="Làm mới dữ liệu xổ số"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isLoadingRealData ? 'animate-spin text-indigo-400' : ''}>
                   <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
@@ -167,7 +167,7 @@ const App: React.FC = () => {
                   <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
                   <path d="M3 21v-5h5"/>
                 </svg>
-                Refresh
+                Làm Mới
               </button>
 
               {/* Auto-Fetch Toggle */}
@@ -175,8 +175,8 @@ const App: React.FC = () => {
                 onClick={handleToggleAutoFetch}
                 disabled={isSimulationMode}
                 title={autoFetchEnabled 
-                  ? `Auto-fetch ON · Next: ${autoFetchStatus.nextFetchTime ? new Date(autoFetchStatus.nextFetchTime).toLocaleString('vi-VN') : 'Soon'}`
-                  : 'Enable auto-fetch after each draw'
+                  ? `Tự động fetch ĐANG BẬT · Lần tiếp: ${autoFetchStatus.nextFetchTime ? new Date(autoFetchStatus.nextFetchTime).toLocaleString('vi-VN') : 'Sắp tới'}`
+                  : 'Bật tự động tải kết quả sau mỗi kỳ quay'
                 }
                 className={`flex items-center gap-2 text-sm px-4 py-2 rounded-xl transition-all border shadow-md disabled:opacity-50 ${
                   autoFetchEnabled
@@ -188,7 +188,7 @@ const App: React.FC = () => {
                   <circle cx="12" cy="12" r="10"/>
                   <polyline points="12 6 12 12 16 14"/>
                 </svg>
-                {autoFetchEnabled ? `Auto ✓` : 'Auto-Fetch'}
+                {autoFetchEnabled ? `Tự Động ✓` : 'Tự Động'}
                 {autoFetchEnabled && autoFetchStatus.fetchCount > 0 && (
                   <span className="bg-emerald-500/20 text-emerald-300 text-xs px-1.5 py-0.5 rounded-full">
                     {autoFetchStatus.fetchCount}
@@ -218,7 +218,7 @@ const App: React.FC = () => {
                   <path d="M10 17v4"/>
                   <path d="M14 17v4"/>
                 </svg>
-                Self-Learn
+                Tự Học
               </button>
 
               <button
@@ -227,7 +227,7 @@ const App: React.FC = () => {
                 disabled={isSimulationMode}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 15v5"/><path d="M12 4v3"/><path d="M18 7v3"/><path d="M6 7v3"/><path d="M12 10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7h12v3a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2Z"/></svg>
-                Manage Data
+                Quản Lý Dữ Liệu
               </button>
 
               <button
@@ -235,7 +235,7 @@ const App: React.FC = () => {
                 className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-violet-400"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Email Alerts
+                Thông Báo Email
               </button>
 
               <button
@@ -243,7 +243,7 @@ const App: React.FC = () => {
                 className="flex items-center gap-2 text-sm text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl transition-all border border-slate-700 shadow-md group"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-90 transition-transform"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/></svg>
-                Admin
+                Quản Trị
               </button>
             </div>
         </div>
