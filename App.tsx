@@ -5,7 +5,7 @@ import { Dashboard } from './components/Dashboard.tsx';
 import { Footer } from './components/Footer.tsx';
 import { DataManagementModal } from './components/DataManagementModal.tsx';
 import { NumberInspectorModal } from './components/NumberInspectorModal.tsx';
-import { SimulationControls } from './components/SimulationControls.tsx';
+// import { SimulationControls } from './components/SimulationControls.tsx';
 import { SimulationResultModal } from './components/SimulationResultModal.tsx';
 import { ApiKeyModal } from './components/ApiKeyModal.tsx';
 import { SubscriptionModal } from './components/SubscriptionModal.tsx';
@@ -49,10 +49,10 @@ const App: React.FC = () => {
   } = useLotteryData(selectedLottery);
 
   const {
-    isSimulationMode, setIsSimulationMode,
-    simulationDate, setSimulationDate,
-    revealedDraw, setRevealedDraw,
-    visibleHistory, handleRevealDraw
+    isSimulationMode, // setIsSimulationMode,
+    // simulationDate, setSimulationDate,
+    // revealedDraw, setRevealedDraw,
+    visibleHistory // handleRevealDraw
   } = useSimulation(history, predictionHistory);
 
   // Auto-fetch state
@@ -178,16 +178,6 @@ const App: React.FC = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8">
-        <SimulationControls
-          isSimulationMode={isSimulationMode}
-          onToggle={setIsSimulationMode}
-          simulationDate={simulationDate}
-          onDateChange={setSimulationDate}
-          onReveal={handleRevealDraw}
-          history={history}
-          latestPrediction={predictionHistory[0]}
-        />
-
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8 flex-wrap">
             <LotterySelector
               selectedLottery={selectedLottery}
@@ -349,13 +339,7 @@ const App: React.FC = () => {
           fullHistory={visibleHistory}
         />
       )}
-      {revealedDraw && (
-        <SimulationResultModal
-          isOpen={!!revealedDraw}
-          onClose={() => setRevealedDraw(null)}
-          result={revealedDraw}
-        />
-      )}
+
       {isApiKeyModalOpen && (
         <ApiKeyModal
           isOpen={isApiKeyModalOpen}

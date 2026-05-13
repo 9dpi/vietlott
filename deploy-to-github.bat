@@ -1,12 +1,12 @@
 @echo off
 echo ============================================
-echo  Vietlott AI - Fix duplicate buttons
+echo  Vietlott AI - Fix App crash
 echo ============================================
 cd /d "d:\Automator_Prj\Vlot\vietlott"
 git add -A
-git commit -m "fix: Loai bo nut 'He Thong' bi trung lap
+git commit -m "fix: Khac phuc loi 'revealedDraw is not defined'
 
-- Xoa nut 'He Thong' vi da co san nut 'Quan Tri' dam nhiem chuc nang mo AdminDashboard tu truoc"
+- Xoa han modal SimulationResultModal o cuoi App.tsx (do tinh nang Mo Phong da bi an, khien bien revealedDraw khong ton tai va danh sap toan bo App)"
 git push origin main
 echo.
 echo Hoan thanh! Site se cap nhat tai:
