@@ -10,7 +10,7 @@ interface SelfLearningPanelProps {
   lotteryType: LotteryType;
 }
 
-const StatBadge: React.FC<{ value: number; label: string; color?: string }> = ({ value, label, color = 'text-indigo-400' }) => (
+const StatBadge: React.FC<{ value: string | number; label: string; color?: string }> = ({ value, label, color = 'text-indigo-400' }) => (
   <div className="bg-slate-900/60 rounded-xl p-4 border border-slate-700/50 text-center">
     <p className={`text-2xl font-bold ${color}`}>{value}</p>
     <p className="text-xs text-slate-400 mt-1">{label}</p>
